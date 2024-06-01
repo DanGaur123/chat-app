@@ -1,13 +1,21 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet,Navigate } from "react-router-dom";
+import {Stack} from '@mui/material'
+import SideBar from "./SideBar";
+import {useSelector} from "react-redux"
+
+
 
 const DashboardLayout = () => {
-
+  const {isLoggedIn} = useSelector((state) => state.auth )
+  if(!isLoggedIn) {
+    return <Navigate to="/auth/login" />
+  }
   return (
-    <>
-      Dashboard Layout
+    <Stack direction="row">
+      <SideBar/>
       <Outlet />
-    </>
+    </Stack>
   );
 };
 
