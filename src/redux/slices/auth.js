@@ -3,20 +3,20 @@ import axios from '../../utils/axios'
 import { showSnackbar } from "./app"
 
 const initialState = {
-    isLoading:false,
+    isLoading: false,
     isLoggedIn: false,
     token: "",
-    email:"",
-    error:false
+    email: "",
+    error: false
 }
 
 const slice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        updateIsLoading(state,action) {
-           state.error = action.payload.error
-           state.isLoading = action.payload.isLoading
+        updateIsLoading(state, action) {
+            state.error = action.payload.error
+            state.isLoading = action.payload.isLoading
         },
         logIn(state, action) {
             state.isLoggedIn = action.payload.isLoggedIn
@@ -26,8 +26,8 @@ const slice = createSlice({
             state.isLoggedIn = false
             state.token = ""
         },
-        updateRegisterEmail(state,action) {
-         state.email = action.payload.email
+        updateRegisterEmail(state, action) {
+            state.email = action.payload.email
         }
     }
 })
@@ -36,7 +36,7 @@ const slice = createSlice({
 export default slice.reducer
 
 export function LoginUser(formValues) {
-    return async (dispatch,getState) => {
+    return async (dispatch, getState) => {
         await axios.post("/auth/login", { ...formValues }, {
             headers: {
                 "Content-Type": "application/json",
@@ -44,32 +44,34 @@ export function LoginUser(formValues) {
         }).then(function (response) {
             console.log(response)
             dispatch(slice.actions.logIn({
-                isLoggedIn :true,
-                token : response.data.token
+                isLoggedIn: true,
+                token: response.data.token
             }))
-            dispatch(showSnackbar({severtiy:"success",message:response.data.message}))
+            window.localStorage.setItem("user_id", response.data.user_id)
+            dispatch(showSnackbar({ severtiy: "success", message: response.data.message }))
         }).catch(function (error) {
             console.log(error)
-            dispatch(showSnackbar({severtiy:"error",message:error.message}))
+            dispatch(showSnackbar({ severtiy: "error", message: error.message }))
 
         })
     }
 }
 
-export function Logout(){
-    return async (dispatch,getState) => {
+export function Logout() {
+    return async (dispatch, getState) => {
+        window.localStorage.removeItem("user_id")
         dispatch(slice.actions.signOut())
     }
 }
 
 export function ForgotPassword(formValues) {
-    return async (dispatch,getState) => {
-        await axios.post("/auth/forgot-password",...formValues,{
-            headers:{
-                "Content-Type":"application/json"
+    return async (dispatch, getState) => {
+        await axios.post("/auth/forgot-password", ...formValues, {
+            headers: {
+                "Content-Type": "application/json"
             }
-        }).then((response)=>{
-             console.log(response)
+        }).then((response) => {
+            console.log(response)
         }).catch((error) => {
             console.log(error)
         })
@@ -77,62 +79,62 @@ export function ForgotPassword(formValues) {
 }
 
 export function NewPassword(formValues) {
-    return async (dispatch,getState) => {
-        await axios.post("/auth/reset-password",...formValues,{
-            headers:{
+    return async (dispatch, getState) => {
+        await axios.post("/auth/reset-password", ...formValues, {
+            headers: {
                 "Content-Type": "application/json"
             }
-        }).then((response)=>{
+        }).then((response) => {
             console.log(response)
             dispatch(slice.actions.logIn({
-                isLoggedIn :true,
-                token : response.data.token
+                isLoggedIn: true,
+                token: response.data.token
             }))
-       }).catch((error) => {
-           console.log(error)
-       })
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 }
 
-export function RegisterUser (formValues) {
-    return async (dispatch,getState) => {
-        dispatch(slice.actions.updateIsLoading({isLoading:true,error:false}))
-        await axios.post("/auth/register",{...formValues},{
-            headers:{
-                "Content-Type":"application/json"
+export function RegisterUser(formValues) {
+    return async (dispatch, getState) => {
+        dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }))
+        await axios.post("/auth/register", { ...formValues }, {
+            headers: {
+                "Content-Type": "application/json"
             }
         }).then(function (response) {
             console.log(response)
-            dispatch(slice.actions.updateRegisterEmail({email:formValues.email}))
-            dispatch(slice.actions.updateIsLoading({isLoading:false,error:false}))
+            dispatch(slice.actions.updateRegisterEmail({ email: formValues.email }))
+            dispatch(slice.actions.updateIsLoading({ isLoading: false, error: false }))
         }).catch(error => {
-           console.log(error)
-           dispatch(slice.actions.updateIsLoading({isLoading:false,error:true}))
+            console.log(error)
+            dispatch(slice.actions.updateIsLoading({ isLoading: false, error: true }))
         }).finally(() => {
-            if(!getState().auth.error){
+            if (!getState().auth.error) {
                 window.location.href = "/auth/verify"
             }
         })
     }
 }
 
-export function VerifyEmail (formValues) {
-    return async (dispatch,getState) => {
-        await axios.post("/auth/Verify",{
+export function VerifyEmail(formValues) {
+    return async (dispatch, getState) => {
+        await axios.post("/auth/Verify", {
             ...formValues
-        },{
-            headers:{
-                "Content-Type":"application/json"
+        }, {
+            headers: {
+                "Content-Type": "application/json"
             }
         }).then((response) => {
             console.log(response)
             dispatch(slice.actions.logIn({
-                isLoggedIn:true,
-                token:response.data.token
-            })) 
+                isLoggedIn: true,
+                token: response.data.token
+            }))
+            window.localStorage.setItem("user_id", response.data.user_id)
         }).catch((error) => {
             console.log(error)
         })
     }
 }
-  
