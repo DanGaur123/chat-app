@@ -1,5 +1,23 @@
 import { Dialog, DialogContent, Stack, Tab, Tabs } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchUsers } from '../../redux/slices/app'
+import { UserComponent } from '../../components/Friends'
+
+const UserList = () => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(fetchUsers())
+  },[])
+  const {users} = useSelector((state) => state.app)
+  return (
+    <>
+    {users.map((el,idx) => {
+      return <UserComponent key={el._id} {...el} />
+    })}
+    </>
+  )
+}
 
 const Friends = ({open, handleClose}) => {
   const [value,setValue]  = useState(0);
