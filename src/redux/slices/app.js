@@ -14,7 +14,9 @@ const initialState = {
     },
     users: [],
     friends:[],
-    freindRequests:[]
+    freindRequests:[],
+    chatType:null,
+    roomId:null
 }
 
 
@@ -46,6 +48,10 @@ const slice = createSlice({
         },
         fetchFriendRequests(state,action){
             state.users = action.payload.requests
+        },
+        selectConversation(state,action){
+            state.chatType = "individual"
+            state.roomId = action.payload.roomId
         }
     }
 })
@@ -129,6 +135,12 @@ export const fetchFriendRequests = () => {
       }).catch(error => {
         console.log(error)
       })
+    }
+}
+
+export const SelectConversation = ({roomId}) => {
+    return (dispatch,getState) => {
+       dispatch(slice.actions.selectConversation({ roomId }))
     }
 }
 

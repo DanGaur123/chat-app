@@ -2,7 +2,7 @@ import { Dialog, DialogContent, Stack, Tab, Tabs } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUsers } from '../../redux/slices/app'
-import { UserComponent } from '../../components/Friends'
+import { FriendComponent, FriendRequestComponent, UserComponent } from '../../components/Friends'
 
 const UserList = () => {
   const dispatch = useDispatch()
@@ -14,6 +14,36 @@ const UserList = () => {
     <>
     {users.map((el,idx) => {
       return <UserComponent key={el._id} {...el} />
+    })}
+    </>
+  )
+}
+
+const FriendList = () => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(fetchUsers())
+  },[])
+  const {users} = useSelector((state) => state.app)
+  return (
+    <>
+    {users.map((el,idx) => {
+      return <FriendComponent key={el._id} {...el} />
+    })}
+    </>
+  )
+}
+
+const FreindRequestList = () => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(fetchUsers())
+  },[])
+  const {users} = useSelector((state) => state.app)
+  return (
+    <>
+    {users.map((el,idx) => {
+      return <FriendRequestComponent key={el._id} {...el.sender} id={el._id} />
     })}
     </>
   )
@@ -40,11 +70,14 @@ const Friends = ({open, handleClose}) => {
         {(() => {
             switch(value) {
                  case 0 :
-                    break
+                    return <UserList/>
                  case 1 :
-                    break
+                    return <FriendList/>
                  case 2 :
-                    break
+                    return <FreindRequestList/>
+                 default: 
+                    console.log(value)
+                    break   
             }
         })()}
         </Stack>
