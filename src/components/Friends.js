@@ -4,6 +4,8 @@ import StyledBagde from "./StyledBadge"
 import { socket } from '../socket'
 import { Chat } from 'phosphor-react'
 
+
+const user_id = window.localStorage.getItem("user_id")
 const StyledChatBox = styled(Box)(({ theme }) => ({
     "&:hover": {
         cursor: "pointer"
@@ -12,7 +14,6 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
 
 const UserComponent = ({ firstName, lastName, _id, online, img }) => {
     const theme = useTheme()
-    const user_id = window.localStorage.getItem("user_id")
     const name = `${firstName} ${lastName}`
     return (
         <StyledChatBox sx={{ width: "100%", borderRadius: 1, backgroundColor: theme.palette.background.paper }} p={2}>
@@ -70,7 +71,9 @@ const FriendComponent = ({ firstName, lastName, _id, online, img }) => {
                 </Stack>
             </Stack>
             <Stack direction={"row"} alignItems={"center"} spacing={2}>
-               <IconButton onClick={() => {}}>
+               <IconButton onClick={() => {
+                socket.emit("start_conversation",{to:_id,from:user_id})
+               }}>
                 <Chat />
                </IconButton>
             </Stack>

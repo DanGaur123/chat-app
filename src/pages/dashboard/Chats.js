@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Stack,  Typography, IconButton, Divider,  Button, } from "@mui/material"
 import { CircleDashed, MagnifyingGlass, ArchiveBox, User } from "phosphor-react"
 import { useTheme } from "@mui/material/styles"
@@ -7,19 +7,27 @@ import { SimpleBarStyle } from "../../components/Scrollbar"
 import {Search,SearchIconWrapper,StyledInputBase} from "../../components/Search"
 import ChatElement from '../../components/ChatElement'
 import Friends from '../../sections/main/Friends'
+import { useDispatch, useSelector } from 'react-redux'
+import { socket } from '../../socket'
+import { fetchDirectConversations } from '../../redux/slices/conversations'
 
-
-
-
+const user_id = window.localStorage.getItem("user_id")
 const Chats = () => {
     const theme = useTheme()
+    const dispatch = useDispatch()
     const [openDialog,setOpenDialog] = useState(false)
+    const {chats} = useSelector((state) => state.conversations.direct_chats)
     const handleCloseDialog = () => {
         setOpenDialog(false)
     }
     const handleOpenDialog = () => {
         setOpenDialog(true)
     }
+    useEffect(() => {
+        socket.emit("get_direct_conversations",{user_id}, (data) => {
+              dispatch(fetchDirectConversations(data))
+        })
+    })
     return (
         <>
         <Box sx={{ position: "relative", width: 320, backgroundColor: theme.palette.mode === "light" ? "#f8faff" : theme.palette.background.paper, boxShadow: "0 0 2px rgba(0,0,0,0.25)" }}>
@@ -66,7 +74,7 @@ const Chats = () => {
                             <Typography variant='subtitle2' sx={{ color: "#676767" }}>
                                 All Chats
                             </Typography>
-                            {ChatList.filter((el) => !el.pinned).map((el) => {
+                            {chats.filter((el) => !el.pinned).map((el) => {
                                 return <ChatElement {...el} />
                             })}
                         </Stack>
