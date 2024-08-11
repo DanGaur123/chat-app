@@ -8,8 +8,13 @@ const rootPersistConfig = {
     storage,
     keyPrefix:"redux-",
 }
-
-const rootReducer = combineReducers({
+const rootReducer = (state,action) => {
+    if(action.type === "RESET"){
+        state = undefined;
+    }
+    return combinedReducers(state,action)
+}
+const combinedReducers = combineReducers({
     app: appReducer,
     auth: authReducer,
     conversation:conversationsReducer

@@ -52,7 +52,7 @@ const LoginForm = () => {
                 <RHFTextfield name="email" label="Email Address" />
                 <RHFTextfield name="password" label="Password" type={showpassword ? "text" : "password"} InputProps={{
                     endAdornment: (
-                        <InputAdornment>
+                        <InputAdornment position='end'>
                             <IconButton onClick={() => setShowPassword(!showpassword)}>
                                 {showpassword ? <Eye /> : <EyeSlash />}
                             </IconButton>

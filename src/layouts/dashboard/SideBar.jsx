@@ -8,8 +8,11 @@ import { Gear, SignOut, User, } from 'phosphor-react'
 import useSettings from "../../hooks/useSettings"
 import AntSwitch from '../../components/AntSwitch';
 import { useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Logout } from '../../redux/slices/auth';
+import { PURGE } from 'redux-persist';
+import {socket} from '../../socket';
+import { persistor } from '../../redux/store';
 
 const getPath = (index) => {
   switch (index) {
@@ -28,6 +31,7 @@ const getPath = (index) => {
 
 const SideBar = () => {
   const theme = useTheme()
+  const {user_id} = useSelector(state => state.auth)
   const [selected, setSelected] = useState(0)
   const { onToggleMode } = useSettings()
   const dispactch = useDispatch()
@@ -41,7 +45,12 @@ const SideBar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleLogout = () => {
+    socket.emit("end",user_id)
+    dispactch(Logout())
+    persistor.purge()
+    dispactch({type: "RESET"})
+  }
   return (
     <Box p={2} sx={{ backgroundColor: theme.palette.background.paper, boxShadow: "0 0 2px rgba(0,0,0,0.25)", height: "100vh", width: 100 }}>
       <Stack direction="column" justifyContent="space-between" alignItems="center" sx={{ width: "100%", height: "100%" }} spacing={3} >
@@ -116,7 +125,7 @@ const SideBar = () => {
               {Profile_Menu.map((el) => (
                 <MenuItem onClick={(event) => {
                   handleClose(event)
-                  el.title === "Logout" && dispactch(Logout())
+                  el.title === "Logout" && handleLogout()
                 }}>
                   <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} width={100} >
                     <span>{el.title}</span>

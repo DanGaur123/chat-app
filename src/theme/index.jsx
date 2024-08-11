@@ -3,6 +3,7 @@ import { useMemo } from "react";
 // @mui
 import { CssBaseline } from "@mui/material";
 import {
+  alpha,
   createTheme,
   ThemeProvider as MUIThemeProvider,
   StyledEngineProvider,
@@ -10,11 +11,11 @@ import {
 // hooks
 import useSettings from "../hooks/useSettings.js";
 //
-import palette from "./palette";
-import typography from "./typography";
-import breakpoints from "./breakpoints";
-import componentsOverride from "./overrides";
-import shadows, { customShadows } from "./shadows";
+import palette from "./palette.js";
+import typography from "./typography.js";
+import breakpoints from "./breakpoints.js";
+import componentsOverride from "./overrides/index.jsx";
+import shadows, { customShadows } from "./shadows.js";
 
 // ----------------------------------------------------------------------
 
@@ -40,14 +41,25 @@ export default function ThemeProvider({ children }) {
     [isLight, themeDirection]
   );
 
-  const theme = createTheme(themeOptions);
+  const theme = createTheme({...themeOptions});
 
-  theme.components = componentsOverride(theme);
+  theme.components = {...componentsOverride(theme),MuiCssBaseline: {styleOverrides : {'&::-webkit-scrollbar': {
+                            width: 0,
+                        },
+                        '&::-webkit-scrollbar-track': {
+                            background: "transparent",
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                            background: "transparent",
+                        },
+                        '&::-webkit-scrollbar-thumb:hover': {
+                            background: "transparent",
+                        }}}};
 
   return (
     <StyledEngineProvider injectFirst>
       <MUIThemeProvider theme={theme}>
-        <CssBaseline />
+        <CssBaseline enableColorScheme />
         {children}
       </MUIThemeProvider>
     </StyledEngineProvider>

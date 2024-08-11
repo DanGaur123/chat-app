@@ -4,7 +4,7 @@ import Router from "./routes";
 import ThemeProvider from './theme';
 // components
 import ThemeSettings from './components/settings';
-import { Snackbar } from "@mui/material";
+import { alpha, GlobalStyles, Snackbar } from "@mui/material";
 import React from "react";
 import MuiAlert from "@mui/material/Alert"
 import { useDispatch, useSelector } from "react-redux";

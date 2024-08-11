@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import axios from 'axios'
+import axios from "../../utils/axios"
 
 
 const initialState = {
@@ -14,7 +14,7 @@ const initialState = {
     },
     users: [],
     friends:[],
-    freindRequests:[],
+    friendRequests:[],
     chatType:null,
     roomId:null
 }
@@ -44,10 +44,10 @@ const slice = createSlice({
             state.users = action.payload.users
         },
         fetchFriends(state,action){
-            state.users = action.payload.friends
+            state.friends = action.payload.friends
         },
         fetchFriendRequests(state,action){
-            state.users = action.payload.requests
+            state.friendRequests = action.payload.requests
         },
         selectConversation(state,action){
             state.chatType = "individual"
@@ -74,10 +74,10 @@ export function UpdateSidebarType(type) {
     }
 }
 
-export function showSnackbar({severtiy,message}) {
+export function showSnackbar({severity,message}) {
     return async (dispatch,getState) => {
         dispatch(slice.actions.openSnackbar({
-            message,severtiy
+            message,severity
         }))
 
         setTimeout(() =>{
@@ -90,7 +90,7 @@ export const closeSnackbar = () => async (dispatch,getState) => {
     dispatch(slice.actions.closeSnackbar())
 }
 
-export const fetchUsers = () => {
+export const FetchUsers = () => {
     return async (dispatch,getState) => {
       await axios.get("/user/get-users",{
         headers:{
@@ -106,7 +106,7 @@ export const fetchUsers = () => {
     }
 }
 
-export const fetchFriends = () => {
+export const FetchFriends = () => {
     return async (dispatch,getState) => {
       await axios.get("/user/get-friends",{
         headers:{
@@ -122,7 +122,7 @@ export const fetchFriends = () => {
     }
 }
 
-export const fetchFriendRequests = () => {
+export const FetchFriendRequests = () => {
     return async (dispatch,getState) => {
       await axios.get("/user/get-friend-requests",{
         headers:{
@@ -130,7 +130,7 @@ export const fetchFriendRequests = () => {
             Authorization:`Bearer ${getState().auth.token}`
         }
       }).then(response => {
-        console.log(response)
+        console.log(response.data.data)
         dispatch(slice.actions.fetchFriendRequests({requests: response.data.data}))
       }).catch(error => {
         console.log(error)

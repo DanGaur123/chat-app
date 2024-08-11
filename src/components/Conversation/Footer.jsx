@@ -13,6 +13,9 @@ import {
 } from "phosphor-react";
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+import {socket} from '../../socket';
+import { useDispatch, useSelector } from 'react-redux';
+import { AddMessage } from '../../redux/slices/conversations';
 
 const StyledInput = styled(TextField)(({ theme }) => ({
     "& .MuiInputBase-input": {
@@ -54,9 +57,16 @@ const Actions = [
     },
 ];
 
-export const Footer = () => {
+export const Footer = ({chat_id,chat_type}) => {
     const theme = useTheme()
+    const dispactch = useDispatch()
     const [openPicker, setOpenPicker] = useState(false)
+    const [message,setMessage] = useState("")
+    const {user_id} = useSelector(state => state.auth)
+    const {current_chat} = useSelector(state => state.conversation.direct_chat);
+    const handleMessage = (text) => {
+        setMessage(text);
+    }
     return (
         <Box p={2} sx={{
             width: "100%",
@@ -68,11 +78,21 @@ export const Footer = () => {
                     <Box sx={{ display: openPicker ? "inline" : "none", zIndex: 10, position: "fixed", bottom: 81, right: 100 }}>
                         <Picker theme={theme.palette.mode} data={data} onEmojiSelect={console.log} />
                     </Box>
-                    <ChatInput setOpenPicker={setOpenPicker} />
+                    <ChatInput setMessage={handleMessage} message={message} setOpenPicker={setOpenPicker} />
                 </Stack>
                 <Box sx={{ height: 48, width: 48, backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>
                     <Stack sx={{ width: "100%", height: "100%" }} alignItems={"center"} justifyContent={"center"}>
-                        <IconButton>
+                        <IconButton onClick={() => {
+                            const current_message = {
+                                to:current_chat,
+                                from:user_id,
+                                message,
+                                chat_id,
+                                type:"msg"
+                            }
+                            socket.emit("text_message",current_message)
+                            handleMessage("")
+                        }}>
                             <PaperPlaneTilt color='#fff' />
                         </IconButton>
                     </Stack>
@@ -82,10 +102,13 @@ export const Footer = () => {
     )
 }
 
-const ChatInput = ({ setOpenPicker }) => {
+const ChatInput = ({ setOpenPicker,setMessage,message }) => {
     const [openActions,setOpenActions] = useState(false)
+    const handleChange = (e,t) => {
+         setMessage(e.target.value)
+    }
     return (
-        <StyledInput fullWidth placeholder='Write a message...' variant='filled' InputProps={{
+        <StyledInput onChange={handleChange} value={message} fullWidth placeholder='Write a message...' variant='filled' InputProps={{
             disableUnderline: true,
             startAdornment: (
                 <Stack sx={{ width: "max-content" }}>
@@ -98,14 +121,14 @@ const ChatInput = ({ setOpenPicker }) => {
                             </Tooltip>
                         ))}
                     </Stack>
-                    <InputAdornment>
+                    <InputAdornment position='start'>
                         <IconButton onClick={() => setOpenActions(!openActions)}>
                             <LinkSimple />
                         </IconButton>
                     </InputAdornment>
                 </Stack>
             ),
-            endAdornment: (<InputAdornment>
+            endAdornment: (<InputAdornment position='end'>
                 <IconButton onClick={() => {
                     setOpenPicker((prev) => !prev)
                 }}>

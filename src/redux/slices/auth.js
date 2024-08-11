@@ -7,7 +7,8 @@ const initialState = {
     isLoggedIn: false,
     token: "",
     email: "",
-    error: false
+    error: false,
+    user_id:null
 }
 
 const slice = createSlice({
@@ -21,10 +22,12 @@ const slice = createSlice({
         logIn(state, action) {
             state.isLoggedIn = action.payload.isLoggedIn
             state.token = action.payload.token
+            state.user_id = action.payload.user_id
         },
         signOut(state, action) {
             state.isLoggedIn = false
             state.token = ""
+            state.user_id = null
         },
         updateRegisterEmail(state, action) {
             state.email = action.payload.email
@@ -45,13 +48,14 @@ export function LoginUser(formValues) {
             console.log(response)
             dispatch(slice.actions.logIn({
                 isLoggedIn: true,
-                token: response.data.token
+                token: response.data.token,
+                user_id:response.data.user_id
             }))
             window.localStorage.setItem("user_id", response.data.user_id)
-            dispatch(showSnackbar({ severtiy: "success", message: response.data.message }))
+            dispatch(showSnackbar({ severity: "success", message: response.data.message }))
         }).catch(function (error) {
             console.log(error)
-            dispatch(showSnackbar({ severtiy: "error", message: error.message }))
+            dispatch(showSnackbar({ severity: "error", message: error.response.data.message }))
 
         })
     }
@@ -120,7 +124,7 @@ export function RegisterUser(formValues) {
 
 export function VerifyEmail(formValues) {
     return async (dispatch, getState) => {
-        await axios.post("/auth/Verify", {
+        await axios.post("/auth/verify-otp", {
             ...formValues
         }, {
             headers: {
@@ -130,7 +134,8 @@ export function VerifyEmail(formValues) {
             console.log(response)
             dispatch(slice.actions.logIn({
                 isLoggedIn: true,
-                token: response.data.token
+                token: response.data.token,
+                user_id:response.data.user_id
             }))
             window.localStorage.setItem("user_id", response.data.user_id)
         }).catch((error) => {

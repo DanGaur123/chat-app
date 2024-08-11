@@ -82,7 +82,7 @@ const Contact = () => {
           </Stack>
         </Box>
         {/* Body */}
-        <Stack sx={{ height: "100%", position: "relative", flexGrow: 1, overflowY: "scroll" }} p={3} spacing={3}>
+        <Stack sx={{ height: "100%", position: "relative", flexGrow: 1, overflowY: "auto"}} p={3} spacing={3}>
           <Stack direction={"row"} alignItems={"center"} spacing={2}>
             <Avatar src={faker.image.avatar()} alt={faker.name.fullName()} sx={{ height: 64, width: 64 }} />
             <Stack spacing={0.5}>

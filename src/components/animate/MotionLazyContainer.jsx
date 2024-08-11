@@ -4,7 +4,7 @@ import { LazyMotion } from 'framer-motion';
 // ----------------------------------------------------------------------
 
 // eslint-disable-next-line import/extensions
-const loadFeatures = () => import('./features.js').then((res) => res.default);
+const loadFeatures = () => import('./features.jsx').then((res) => res.default);
 
 MotionLazyContainer.propTypes = {
   children: PropTypes.node

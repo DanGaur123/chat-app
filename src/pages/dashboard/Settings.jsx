@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import { Stack, Box, IconButton, Typography, Avatar, Divider } from "@mui/material"
 import { useTheme } from "@mui/material/styles"
 import {
@@ -13,7 +12,8 @@ import {
     Lock
 } from "phosphor-react"
 import { faker } from '@faker-js/faker'
-import Shortcuts from '../../sections/settings/Shortcuts'
+import Shortcuts from '../../sections/settings/Shortcuts.jsx'
+import { useState } from "react"
 
 const Settings = () => {
     const theme = useTheme()
@@ -95,7 +95,7 @@ const Settings = () => {
                         </Stack>
                         <Stack spacing={4}>
                             {Settings_List.map(({ key, icon, title, onclick }) => (
-                                <Stack onClick={onclick} sx={{ cursor: "pointer" }} spacing={2}>
+                                <Stack key={key} onClick={onclick} sx={{ cursor: "pointer" }} spacing={2}>
                                     <Stack direction={"row"} spacing={2} alignItems={"center"}>
                                         {icon}
                                         <Typography variant='body2'>{title}</Typography>

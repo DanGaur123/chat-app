@@ -1,13 +1,13 @@
 import { Dialog, DialogContent, Stack, Tab, Tabs } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchUsers } from '../../redux/slices/app'
+import { FetchFriendRequests, FetchFriends, FetchUsers } from '../../redux/slices/app'
 import { FriendComponent, FriendRequestComponent, UserComponent } from '../../components/Friends'
 
 const UserList = () => {
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(fetchUsers())
+    dispatch(FetchUsers())
   },[])
   const {users} = useSelector((state) => state.app)
   return (
@@ -19,31 +19,31 @@ const UserList = () => {
   )
 }
 
-const FriendList = () => {
+const FriendList = ({handleClose}) => {
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(fetchUsers())
+    dispatch(FetchFriends())
   },[])
-  const {users} = useSelector((state) => state.app)
+  const {friends} = useSelector((state) => state.app)
   return (
     <>
-    {users.map((el,idx) => {
-      return <FriendComponent key={el._id} {...el} />
+    {friends.map((el,idx) => {
+      return <FriendComponent key={el._id} {...el} handleClose={handleClose} />
     })}
     </>
   )
 }
 
-const FreindRequestList = () => {
+const FriendRequestList = () => {
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(fetchUsers())
+    dispatch(FetchFriendRequests())
   },[])
-  const {users} = useSelector((state) => state.app)
+  const {friendRequests} = useSelector((state) => state.app)
   return (
     <>
-    {users.map((el,idx) => {
-      return <FriendRequestComponent key={el._id} {...el.sender} id={el._id} />
+    {friendRequests?.map((el,idx) => {
+      return <FriendRequestComponent key={el._id} id={el._id} {...el.sender}/>
     })}
     </>
   )
@@ -55,7 +55,6 @@ const Friends = ({open, handleClose}) => {
     console.log(newValue)
     setValue(newValue)
   }
-
   return (
     <Dialog fullWidth maxWidth="xs" open={open} onClose={handleClose} sx={{ p: 4 }} keepMounted>
       <Stack sx={{width:"100%"}} p={2}>
@@ -72,11 +71,10 @@ const Friends = ({open, handleClose}) => {
                  case 0 :
                     return <UserList/>
                  case 1 :
-                    return <FriendList/>
+                    return <FriendList handleClose = {handleClose}/>
                  case 2 :
-                    return <FreindRequestList/>
+                    return <FriendRequestList/>
                  default: 
-                    console.log(value)
                     break   
             }
         })()}

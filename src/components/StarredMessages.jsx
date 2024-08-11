@@ -25,7 +25,7 @@ const StaredMessages = () => {
                         <Typography variant='subtitle2'>Starred Messages</Typography>
                     </Stack>
                 </Box>
-                <Stack sx={{ height: "100%", position: "relative", flexGrow: 1, overflowY: "scroll" }} p={3} spacing={3}>
+                <Stack sx={{ height: "100%", position: "relative", flexGrow: 1, overflowY: "auto"}} p={3} spacing={3}>
                     <Message menu={false}/>
                 </Stack>
             </Stack>

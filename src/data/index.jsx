@@ -209,6 +209,7 @@ const ChatList = [
 const Chat_History = [
   {
     type: "msg",
+    subtype:"Text",
     message: "Hi 👋🏻, How are ya ?",
     incoming: true,
     outgoing: false,
@@ -220,18 +221,21 @@ const Chat_History = [
   {
     type: "msg",
     message: "Hi 👋 Panda, not bad, u ?",
+    subtype:"Text",
     incoming: false,
     outgoing: true,
   },
   {
     type: "msg",
     message: "Can you send me an abstarct image?",
+    subtype:"Text",
     incoming: false,
     outgoing: true,
   },
   {
     type: "msg",
     message: "Ya sure, sending you a pic",
+    subtype:"Text",
     incoming: true,
     outgoing: false,
   },
@@ -247,6 +251,7 @@ const Chat_History = [
   {
     type: "msg",
     message: "Can you please send this in file format?",
+    subtype:"Text",
     incoming: false,
     outgoing: true,
   },

@@ -1,55 +1,68 @@
 import { Avatar, Box, Button, IconButton, Stack, styled, Typography, useTheme } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import StyledBagde from "./StyledBadge"
-import { socket } from '../socket'
+import {socket} from '../socket'
 import { Chat } from 'phosphor-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { showSnackbar } from '../redux/slices/app'
 
 
-const user_id = window.localStorage.getItem("user_id")
 const StyledChatBox = styled(Box)(({ theme }) => ({
     "&:hover": {
         cursor: "pointer"
     }
 }))
 
-const UserComponent = ({ firstName, lastName, _id, online, img }) => {
+const UserComponent = ({ firstName, lastName, _id, status, avatar }) => {
     const theme = useTheme()
+    const dispatch = useDispatch()
+    const {user_id} = useSelector(state => state.auth)
+    const [send,setSend] = useState(false)
     const name = `${firstName} ${lastName}`
     return (
         <StyledChatBox sx={{ width: "100%", borderRadius: 1, backgroundColor: theme.palette.background.paper }} p={2}>
             <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"}>
             <Stack direction={"row"} alignItems={"center"} spacing={2}>
                 {" "}
-                {online ? (
+                {status ? (
                     <StyledBagde
                     overlap='circular'
                     anchorOrigin={{vertical:"bottom",horizontal:"right"}}
                     variant='dot'>
-                    <Avatar src={img} alt={name} />
+                    <Avatar src={avatar} alt={name} />
                     </StyledBagde>
                 ) : (
-                    <Avatar src={img} alt={name} />
+                    <Avatar src={avatar} alt={name} />
                 )}
                 <Stack spacing={0.3}>
                     <Typography variant='subtitle2'>{name}</Typography>
                 </Stack>
             </Stack>
             <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                {
+                !send ?
                <Button onClick={() => {
-                socket.emit("friend_request",{to:_id,from:user_id},() => {
-                    alert("Request Sent")
-                })
+                socket.emit("friend_request",{to:_id,from:user_id})
+                setSend(true)
                }}>
                 Send Request
                </Button>
+                :
+               <Button variant="outlined" onClick={() => {
+                setSend(false)
+               }}>
+                Cancel
+               </Button>
+                }
             </Stack>
         </Stack>
         </StyledChatBox>
     )
 }
 
-const FriendComponent = ({ firstName, lastName, _id, online, img }) => {
+const FriendComponent = ({ firstName, lastName, _id, online, img, handleClose }) => {
     const theme = useTheme()
+    const {user_id} = useSelector(state => state.auth)
     const name = `${firstName} ${lastName}`
     return (
         <StyledChatBox sx={{ width: "100%", borderRadius: 1, backgroundColor: theme.palette.background.paper }} p={2}>
@@ -73,6 +86,7 @@ const FriendComponent = ({ firstName, lastName, _id, online, img }) => {
             <Stack direction={"row"} alignItems={"center"} spacing={2}>
                <IconButton onClick={() => {
                 socket.emit("start_conversation",{to:_id,from:user_id})
+                handleClose()
                }}>
                 <Chat />
                </IconButton>
@@ -82,7 +96,7 @@ const FriendComponent = ({ firstName, lastName, _id, online, img }) => {
     )
 }
 
-const FriendRequestComponent = ({ firstName, lastName, _id, online, img, id }) => {
+const FriendRequestComponent = ({ firstName, lastName, online, img, id }) => {
     const theme = useTheme()
     const name = `${firstName} ${lastName}`
     return (
