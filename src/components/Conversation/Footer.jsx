@@ -16,6 +16,7 @@ import Picker from '@emoji-mart/react'
 import {socket} from '../../socket';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddMessage } from '../../redux/slices/conversations';
+import moment from 'moment';
 
 const StyledInput = styled(TextField)(({ theme }) => ({
     "& .MuiInputBase-input": {
@@ -67,6 +68,18 @@ export const Footer = ({chat_id,chat_type}) => {
     const handleMessage = (text) => {
         setMessage(text);
     }
+    const sendMessage = () => {
+        const current_message = {
+            to:current_chat.user_id,
+            from:user_id,
+            message,
+            chat_id,
+            type:"msg",
+            created_at:moment.now()
+        }
+        socket.emit("text_message",current_message)
+        handleMessage("")
+    }
     return (
         <Box p={2} sx={{
             width: "100%",
@@ -82,17 +95,7 @@ export const Footer = ({chat_id,chat_type}) => {
                 </Stack>
                 <Box sx={{ height: 48, width: 48, backgroundColor: theme.palette.primary.main, borderRadius: 1.5 }}>
                     <Stack sx={{ width: "100%", height: "100%" }} alignItems={"center"} justifyContent={"center"}>
-                        <IconButton onClick={() => {
-                            const current_message = {
-                                to:current_chat,
-                                from:user_id,
-                                message,
-                                chat_id,
-                                type:"msg"
-                            }
-                            socket.emit("text_message",current_message)
-                            handleMessage("")
-                        }}>
+                        <IconButton onClick={sendMessage}>
                             <PaperPlaneTilt color='#fff' />
                         </IconButton>
                     </Stack>

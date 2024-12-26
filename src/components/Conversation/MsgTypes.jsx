@@ -3,6 +3,7 @@ import { Stack, Divider, Typography, Box,Link,IconButton,Menu,MenuItem } from "@
 import { useTheme } from "@mui/material/styles"
 import {Image,DownloadSimple,DotsThreeVertical} from "phosphor-react"
 import { Message_options } from '../../data'
+import moment from 'moment/moment'
 
 const DocMsg = ({el,menu}) => {
   const theme = useTheme()
@@ -57,7 +58,6 @@ const LinkMsg = ({el,menu}) => {
 
 const ReplyMsg = ({ el,menu }) => {
   const theme = useTheme()
-
   return (
     <Stack direction={"row"} justifyContent={el.incoming ? "flex-start" : "flex-end"}>
       <Box p={1.5} sx={{ backgroundColor: el.incoming ? theme.palette.background.default : theme.palette.primary.main, borderRadius: 1.5, width: "max-content" }}>
@@ -103,14 +103,15 @@ const TextMsg = ({ el,menu }) => {
   const theme = useTheme()
   return (
     <Stack direction={"row"} justifyContent={el.incoming ? "flex-start" : "flex-end"}>
-      <Box p={1.5} sx={{ backgroundColor: el.incoming ? theme.palette.background.default : theme.palette.primary.main, borderRadius: 1.5, width: "max-content" }}>
+      <Box p={1.5} sx={{ backgroundColor: el.incoming ? theme.palette.background.default : theme.palette.primary.main, borderRadius: 1.5, width: "max-content",display:"flex",direction:"row",alignItems:"flex-end",gap:3}}>
         <Typography variant='body2' color={el.incoming ? theme.palette.text : "#fff"}>
           {el.message}
         </Typography>
+       <Typography color={el.incoming ? theme.palette.text.secondary : theme.palette.grey[400]} variant='caption'>{moment(el.time).format("hh:mm A")}</Typography>
       </Box>
       {menu &&
       <MessageOptions/>
-      }
+    }
     </Stack>
   )
 }

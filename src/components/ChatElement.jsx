@@ -7,21 +7,22 @@ import { SelectConversation } from "../redux/slices/app"
 import { UpdateCurrentChat } from "../redux/slices/conversations"
 
 
-const ChatElement = ({ id, name, img, msg, time, unread, online,user_id }) => {
+const ChatElement = ({ id, name, img, msg, time, unread, online,user_id,selected,handleSelected }) => {
     const theme = useTheme()
     const dispatch = useDispatch()
+    const isSelected = selected === user_id;
     return (
         <Box key={id} p={2} sx={{
             width: "100%",
             borderRadius: 1,
-            backgroundColor: theme.palette.mode === "light" ?  "#fff" : theme.palette.background.default,
+            backgroundColor: isSelected ? theme.palette.primary.main : theme.palette.background.default,
             cursor:"pointer",
-            ':hover' : {
-                backgroundColor: theme.palette.mode === "light" ?  alpha(theme.palette.primary.main,0.2) : alpha(theme.palette.primary.main,0.5),
+            ':hover' : { backgroundColor:!isSelected && alpha(theme.palette.common.black,0.2),
             }
         }} onClick={() => {
               dispatch(SelectConversation({roomId:id}))
-              dispatch(UpdateCurrentChat({this_user:user_id}))
+              dispatch(UpdateCurrentChat({this_user:{name,img,online,user_id}}))
+              handleSelected(user_id)
         }} >
             <Stack direction={'row'} alignItems={"center"} justifyContent={"space-between"}>
                 <Stack direction={"row"} spacing={2}>
@@ -35,16 +36,16 @@ const ChatElement = ({ id, name, img, msg, time, unread, online,user_id }) => {
                         </StyledBadge>
                         : <Avatar src={img} />}
                     <Stack spacing={0.3}>
-                        <Typography variant='subtitle2'>
+                        <Typography color={isSelected && "white"}  variant='subtitle2'>
                             {name}
                         </Typography>
-                        <Typography variant='caption'>
+                        <Typography color={isSelected && "white"} variant='caption'>
                             {msg}
                         </Typography>
                     </Stack>
                 </Stack>
                 <Stack spacing={2} alignItems={"center"}>
-                    <Typography sx={{ fontWeight: 600 }} variant='caption'>
+                    <Typography color={isSelected && "white"} sx={{ fontWeight: 600 }} variant='caption'>
                         {time}
                     </Typography>
                     <Badge color="primary" badgeContent={unread} />

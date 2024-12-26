@@ -9,7 +9,7 @@ import {socket} from '../../socket'
 const Conversation = ({chat_id,chat_type}) => {
     const scrollRef = useRef(null)
     const dispatch = useDispatch()
-    const {current_messages} = useSelector(state => state.conversation.direct_chat)
+    const {current_messages,current_chat} = useSelector(state => state.conversation.direct_chat)
     useEffect(() => {
       socket.emit("get_messages",{chat_id,chat_type} ,(data) => {
         dispatch(FetchMessages({messages:data}))
@@ -22,7 +22,7 @@ const Conversation = ({chat_id,chat_type}) => {
     },[current_messages])
     return (
         <Stack height={"100%"} maxHeight={"100vh"} width={"auto"}>
-            <Header />
+            <Header details = {current_chat} />
             <Box width={"100%"} sx={{ flexGrow: 1, height: "100%", overflowY: "auto"}}>
                 <Message messages={current_messages} menu={true} />
                 <div ref={scrollRef} />

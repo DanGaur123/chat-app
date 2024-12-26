@@ -31,7 +31,7 @@ const DashboardLayout = () => {
      dispatch(AddMessage({message:data.message}))
     })
      socketRef.current.on("start_chat",(data) => {
-      console.log(data)
+      console.log(el)
       const existing_chat = chats.find(el => el.id === data.id)
       if(existing_chat){
         dispatch(updateDirectChat({chat:data}))

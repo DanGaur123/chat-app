@@ -5,26 +5,25 @@ import { DocMsg, LinkMsg, MediaMsg, ReplyMsg, TextMsg, Timeline } from './MsgTyp
 
 
 const Message = ({menu,messages}) => {
-  console.log(messages)
   return (
     <Box p={3}>
       <Stack spacing={3}>
        {messages.map((el) => {
         switch(el.type) {
             case "divider":
-               return <Timeline el={el}/>
+               return <Timeline key={el.id} el={el}/>
             case "msg":
                 switch(el.subtype) {
                     case "img" :
-                       return <MediaMsg el={el} menu={menu}/>
+                       return <MediaMsg key={el.id} el={el} menu={menu}/>
                     case "doc" :
-                        return <DocMsg el={el} menu={menu}/>
+                        return <DocMsg key={el.id} el={el} menu={menu}/>
                     case "link" :
-                        return <LinkMsg el={el} menu={menu} />
+                        return <LinkMsg key={el.id} el={el} menu={menu} />
                     case "reply" :
-                       return <ReplyMsg el={el} menu={menu}/>
+                       return <ReplyMsg key={el.id} el={el} menu={menu}/>
                     case "Text" :
-                        return <TextMsg el={el} menu={menu}/>
+                        return <TextMsg key={el.id} el={el} menu={menu}/>
                     default :
                        return <></>
                 }

@@ -15,8 +15,12 @@ const Chats = () => {
     const theme = useTheme()
     const dispatch = useDispatch()
     const [openDialog, setOpenDialog] = useState(false)
+    const [selectedChat,setSelectedChat] = useState(null)
     const {user_id} = useSelector(state => state.auth)
     const { chats } = useSelector((state) => state.conversation.direct_chat)
+    const handleSelectedChat = (id) => {
+         setSelectedChat(id)
+    }
     const handleCloseDialog = () => {
         setOpenDialog(false)
     }
@@ -83,13 +87,13 @@ const Chats = () => {
                                     Pinned
                                 </Typography>
                                 {ChatList.filter((el) => el.pinned).map((el) => {
-                                    return <ChatElement {...el} />
+                                    return <ChatElement selected={selectedChat} handleSelected={handleSelectedChat} {...el} />
                                 })}
                                 <Typography variant='subtitle2' sx={{ color: "#676767" }}>
                                     All Chats
                                 </Typography>
                                 {chats.filter((el) => !el.pinned).map((el) => {
-                                    return <ChatElement {...el} />
+                                    return <ChatElement selected={selectedChat} handleSelected={handleSelectedChat} {...el} />
                                 })}
                             </Stack>
                         </SimpleBarStyle>
